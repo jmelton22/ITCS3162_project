@@ -35,3 +35,10 @@ voting_data = pd.read_csv('voting_data.csv',
                           dtype='category')
 print(voting_data.head())
 voting_data.info()
+
+labels = voting_data['Class Name']
+features = voting_data.drop('Class Name', axis=1)
+
+features.replace('?', np.NaN, inplace=True)
+features.replace('y', 1, inplace=True)
+features.replace('n', 0, inplace=True)
