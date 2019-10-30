@@ -45,3 +45,14 @@ features.replace('n', 0, inplace=True)
 
 imp = SimpleImputer(strategy='most_frequent')
 features = imp.fit_transform(features)
+
+X_train, X_test, y_train, y_test = ms.train_test_split(features, labels,
+                                                       test_size=0.2,
+                                                       random_state=123)
+
+clf = DecisionTreeClassifier()
+clf.fit(X_train, y_train)
+
+y_pred = clf.predict(X_test)
+
+print_metrics(y_test, y_pred)
