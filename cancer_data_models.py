@@ -42,7 +42,7 @@ def print_cv_scores(f1, precision, recall):
 cancer_data = pd.read_csv('breastcancer_data.csv',
                           header=0,
                           index_col=0)
-cancer_data.drop(cancer_data.filter(regex="Unnamed"),
+cancer_data.drop(cancer_data.filter(regex='Unnamed'),
                  axis=1, inplace=True)
 # print(cancer_data.head())
 # cancer_data.info()
@@ -66,7 +66,7 @@ print('Naive Bayes Classifier')
 print_metrics(y_test, y_pred_gnb)
 print()
 
-gnb_cv_f1 = ms.cross_val_score(gnb, features, labels, cv=5, scoring='f1_micro')
+gnb_cv_f1 = ms.cross_val_score(gnb, features, labels, cv=5, scoring='f1')
 gnb_cv_precision = ms.cross_val_score(gnb, features, labels, cv=5, scoring='precision')
 gnb_cv_recall = ms.cross_val_score(gnb, features, labels, cv=5, scoring='recall')
 
@@ -82,7 +82,7 @@ print('K-Nearest Neighbors Classifier')
 print_metrics(y_test, y_pred_knn)
 print()
 
-knn_cv_f1 = ms.cross_val_score(knn, features, labels, cv=5, scoring='f1_micro')
+knn_cv_f1 = ms.cross_val_score(knn, features, labels, cv=5, scoring='f1')
 knn_cv_precision = ms.cross_val_score(knn, features, labels, cv=5, scoring='precision')
 knn_cv_recall = ms.cross_val_score(knn, features, labels, cv=5, scoring='recall')
 
