@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 import pandas as pd
-import numpy as np
 
 from sklearn.tree import DecisionTreeClassifier
 import sklearn.model_selection as ms
@@ -29,19 +28,14 @@ def print_metrics(labels, preds):
     print('F1 Score     {0:.2f}       {0:.2f}'.format(scores[2][0], scores[2][1]))
 
 
-voting_data = pd.read_csv('voting_data.csv',
+voting_data = pd.read_csv('voting_data_clean.csv',
                           header=0,
-                          index_col=False,
-                          dtype='category')
+                          index_col=False)
 print(voting_data.head())
 voting_data.info()
 
 labels = voting_data['Class Name']
 features = voting_data.drop('Class Name', axis=1)
-
-features.replace('?', np.NaN, inplace=True)
-features.replace('y', 1, inplace=True)
-features.replace('n', 0, inplace=True)
 
 imp = SimpleImputer(strategy='most_frequent')
 features = imp.fit_transform(features)
