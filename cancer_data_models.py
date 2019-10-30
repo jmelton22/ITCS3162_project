@@ -27,6 +27,16 @@ def print_metrics(labels, preds):
     print('F1 Score     {0:.2f}       {0:.2f}'.format(scores[2][0], scores[2][1]))
 
 
+def print_cv_scores(f1, precision, recall):
+    print('         F1     Precision    Recall')
+    for i, (f, p, r) in enumerate(zip(f1, precision, recall)):
+        print('Fold {}   {:.3f}    {:.3f}      {:.3f}'.format(i, f, p, r))
+    print()
+    print('Mean F1: {:.3f}'.format(f1.mean()))
+    print('Mean Precision: {:.3f}'.format(precision.mean()))
+    print('Mean Recall: {:.3f}'.format(recall.mean()))
+
+
 cancer_data = pd.read_csv('breastcancer_data.csv',
                           header=0,
                           index_col=0)
@@ -52,7 +62,15 @@ y_pred_gnb = gnb.predict(X_test)
 
 print('Naive Bayes Classifier')
 print_metrics(y_test, y_pred_gnb)
-print('-'*50)
+print()
+
+gnb_cv_f1 = ms.cross_val_score(gnb, features, labels, cv=5, scoring='f1_micro')
+gnb_cv_precision = ms.cross_val_score(gnb, features, labels, cv=5, scoring='precision')
+gnb_cv_recall = ms.cross_val_score(gnb, features, labels, cv=5, scoring='recall')
+
+print('Cross Validation Scores')
+print_cv_scores(gnb_cv_f1, gnb_cv_precision, gnb_cv_recall)
+print('-' * 50)
 
 knn = KNeighborsClassifier()
 knn.fit(X_train, y_train)
@@ -61,3 +79,11 @@ y_pred_knn = knn.predict(X_test)
 
 print('K-Nearest Neighbors Classifier')
 print_metrics(y_test, y_pred_knn)
+print()
+
+knn_cv_f1 = ms.cross_val_score(knn, features, labels, cv=5, scoring='f1_micro')
+knn_cv_precision = ms.cross_val_score(knn, features, labels, cv=5, scoring='precision')
+knn_cv_recall = ms.cross_val_score(knn, features, labels, cv=5, scoring='recall')
+
+print('Cross Validation Scores')
+print_cv_scores(knn_cv_f1, knn_cv_precision, knn_cv_recall)
