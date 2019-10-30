@@ -47,6 +47,7 @@ voting_data = pd.read_csv('voting_data.csv',
                           index_col=False)
 # print(voting_data.head())
 # voting_data.info()
+
 voting_data.replace('?', np.NaN, inplace=True)
 voting_data.replace('y', 1, inplace=True)
 voting_data.replace('n', 0, inplace=True)
@@ -72,6 +73,7 @@ imp = SimpleImputer(strategy='most_frequent')
 features_v3 = imp.fit_transform(features_v3)
 
 for i, (features, labels) in enumerate([(features_v1, labels_v1), (features_v2, labels_v2), (features_v3, labels_v3)]):
+
     X_train, X_test, y_train, y_test = ms.train_test_split(features, labels,
                                                            test_size=0.2,
                                                            random_state=123)
