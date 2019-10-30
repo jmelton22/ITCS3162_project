@@ -101,10 +101,10 @@ for i, (features, labels) in enumerate([(features_v1, labels_v1), (features_v2, 
     print_metrics(y_test, y_pred_nb)
     print()
 
-    nb_cv_f1 = ms.cross_val_score(tree, features, labels, cv=5, scoring='f1')
-    nb_cv_precision = ms.cross_val_score(tree, features, labels, cv=5, scoring='precision')
-    nb_cv_recall = ms.cross_val_score(tree, features, labels, cv=5, scoring='recall')
+    bnb_cv_f1 = ms.cross_val_score(tree, features, labels, cv=5, scoring='f1')
+    bnb_cv_precision = ms.cross_val_score(tree, features, labels, cv=5, scoring='precision')
+    bnb_cv_recall = ms.cross_val_score(tree, features, labels, cv=5, scoring='recall')
 
-    print_cv_scores(nb_cv_f1, nb_cv_precision, nb_cv_recall)
+    print_cv_scores(bnb_cv_f1, bnb_cv_precision, bnb_cv_recall)
     print('-' * 50)
     print('-' * 50)
