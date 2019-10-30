@@ -42,3 +42,6 @@ features = voting_data.drop('Class Name', axis=1)
 features.replace('?', np.NaN, inplace=True)
 features.replace('y', 1, inplace=True)
 features.replace('n', 0, inplace=True)
+
+imp = SimpleImputer(strategy='most_frequent')
+features = imp.fit_transform(features)
