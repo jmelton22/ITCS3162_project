@@ -13,13 +13,14 @@ def print_metrics(labels, preds):
     """
     scores = metrics.precision_recall_fscore_support(labels, preds)
     conf = metrics.confusion_matrix(labels, preds)
-    print(' ' * 11 + 'Confusion Matrix')
+    print(' ' * 4 + 'Confusion Matrix')
     print(' ' * 17 + 'Predict Malignant    Predict Benign')
     print('Actual Malignant         {}                 {}'.format(conf[0, 0], conf[0, 1]))
     print('Actual Benign            {}                 {}'.format(conf[1, 0], conf[1, 1]))
     print()
     print('Accuracy: {0:.3f}'.format(metrics.accuracy_score(labels, preds)))
     print()
+    print(' ' * 4 + 'Classification Report')
     print(' ' * 11 + 'Malignant    Benign')
     print('Num cases    {}           {}'.format(scores[3][0], scores[3][1]))
     print('Precision    {0:.2f}       {0:.2f}'.format(scores[0][0], scores[0][1]))
@@ -28,7 +29,8 @@ def print_metrics(labels, preds):
 
 
 def print_cv_scores(f1, precision, recall):
-    print('         F1     Precision    Recall')
+    print(' ' * 4 + 'Cross Validation Scores')
+    print(' ' * 9 + 'F1     Precision    Recall')
     for i, (f, p, r) in enumerate(zip(f1, precision, recall)):
         print('Fold {}   {:.3f}    {:.3f}      {:.3f}'.format(i, f, p, r))
     print()
@@ -68,7 +70,6 @@ gnb_cv_f1 = ms.cross_val_score(gnb, features, labels, cv=5, scoring='f1_micro')
 gnb_cv_precision = ms.cross_val_score(gnb, features, labels, cv=5, scoring='precision')
 gnb_cv_recall = ms.cross_val_score(gnb, features, labels, cv=5, scoring='recall')
 
-print('Cross Validation Scores')
 print_cv_scores(gnb_cv_f1, gnb_cv_precision, gnb_cv_recall)
 print('-' * 50)
 
@@ -85,5 +86,4 @@ knn_cv_f1 = ms.cross_val_score(knn, features, labels, cv=5, scoring='f1_micro')
 knn_cv_precision = ms.cross_val_score(knn, features, labels, cv=5, scoring='precision')
 knn_cv_recall = ms.cross_val_score(knn, features, labels, cv=5, scoring='recall')
 
-print('Cross Validation Scores')
 print_cv_scores(knn_cv_f1, knn_cv_precision, knn_cv_recall)
