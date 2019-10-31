@@ -43,13 +43,13 @@ def plot_cv_scores(f1, precision, recall):
 
     plt.plot(folds, precision,
              color='cornflowerblue', label='Precision',
-             alpha=0.8, linewidth=2)
+             alpha=0.75, linewidth=2)
     plt.plot(folds, f1,
              color='orange', label='F1 Score',
-             alpha=0.8, linewidth=2)
+             alpha=0.75, linewidth=2)
     plt.plot(folds, recall,
              color='forestgreen', label='Recall',
-             alpha=0.8, linewidth=2)
+             alpha=0.75, linewidth=2)
 
     plt.axhline(precision.mean(), color='cornflowerblue', label='Mean Precision', linestyle='dashed')
     plt.axhline(f1.mean(), color='orange', label='Mean F1 Score', linestyle='dashed')
@@ -72,24 +72,29 @@ def plot_cv_scores_bar(f1, precision, recall):
     r2 = [x + bar_width for x in r1]
     r3 = [x + bar_width for x in r2]
 
+    fig = plt.figure(figsize=(10, 6))
+    ax = plt.subplot(111)
+
     plt.bar(r1, f1,
-            color='orange', width=bar_width,
+            color='orange', width=bar_width, alpha=0.75,
             edgecolor='white', label='F1 Score')
     plt.bar(r2, precision,
-            color='cornflowerblue', width=bar_width,
+            color='cornflowerblue', width=bar_width, alpha=0.75,
             edgecolor='white', label='Precision')
     plt.bar(r3, recall,
-            color='forestgreen', width=bar_width,
+            color='forestgreen', width=bar_width, alpha=0.75,
             edgecolor='white', label='Recall')
 
     plt.axhline(f1.mean(), color='orange', linestyle='dashed', label='Mean F1 Score')
     plt.axhline(precision.mean(), color='cornflowerblue', linestyle='dashed', label='Mean Precision')
     plt.axhline(recall.mean(), color='forestgreen', linestyle='dashed', label='Mean Recall')
 
-    plt.ylim(top=1.3)
+    plt.ylim(bottom=0.7)
     plt.xlabel('Fold', fontweight='bold')
+    plt.title('Cross Validation Scores')
     plt.xticks([r + bar_width for r in range(len(f1))], folds)
-    plt.legend(title='Scoring Method', loc='best', ncol=2, frameon=True)
+
+    ax.legend(title='Scoring Method', loc='lower left', bbox_to_anchor=(1, 0.5), ncol=1, frameon=True)
 
     plt.show()
 
@@ -107,7 +112,7 @@ def plot_grid_cv(score_dict):
     plt.xlabel('Number of Neighbors')
     plt.ylabel('Mean F1 Score')
 
-    plt.ylim(bottom=0.6)
+    plt.ylim(bottom=0.7)
     plt.xticks([int(i) for i in n_neighbors])
 
     plt.show()
