@@ -1,10 +1,15 @@
 #!/usr/bin/env python3
 
 import pandas as pd
+import matplotlib.pyplot as plt
+
 from sklearn.naive_bayes import GaussianNB
 from sklearn.neighbors import KNeighborsClassifier
 import sklearn.model_selection as ms
 from sklearn import metrics
+
+import warnings
+warnings.filterwarnings('ignore', category=DeprecationWarning)
 
 
 def print_metrics(labels, preds):
@@ -37,6 +42,27 @@ def print_cv_scores(f1, precision, recall):
     print('Mean F1: {:.3f}'.format(f1.mean()))
     print('Mean Precision: {:.3f}'.format(precision.mean()))
     print('Mean Recall: {:.3f}'.format(recall.mean()))
+
+
+def plot_cv_scores(score_dict):
+    print(score_dict)
+
+    n_neighbors = score_dict['param_n_neighbors']
+    mean_scores = score_dict['mean_test_score']
+    std_scores = score_dict['std_test_score']
+    colors = ['orange', 'cornflowerblue', 'forestgreen', 'red', 'purple']
+
+    fig = plt.figure(figsize=(10, 6))
+    plt.bar(n_neighbors, mean_scores,
+            yerr=std_scores, capsize=2)
+
+    plt.title('Cross-Validation Scores for KNN Model')
+    plt.xlabel('Number of Neighbors')
+    plt.ylabel('Mean F1 Score')
+    plt.ylim(bottom=0.6)
+    plt.xticks([int(i) for i in n_neighbors])
+
+    plt.show()
 
 
 cancer_data = pd.read_csv('breastcancer_data.csv',
@@ -74,7 +100,14 @@ print_cv_scores(gnb_cv_f1, gnb_cv_precision, gnb_cv_recall)
 print('-' * 50)
 
 knn = KNeighborsClassifier()
+
+knn = ms.GridSearchCV(estimator=knn, param_grid={'n_neighbors': [1, 3, 5, 7, 9]},
+                      cv=3,
+                      scoring='f1',
+                      refit=True)
 knn.fit(X_train, y_train)
+
+plot_cv_scores(knn.cv_results_)
 
 y_pred_knn = knn.predict(X_test)
 
