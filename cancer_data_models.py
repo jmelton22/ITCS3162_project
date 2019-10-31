@@ -64,3 +64,4 @@ knn_cv_recall = ms.cross_val_score(knn, features, labels, cv=5, scoring='recall'
 
 plot_cv_scores(knn_cv_f1, knn_cv_precision, knn_cv_recall)
 print_cv_scores(knn_cv_f1, knn_cv_precision, knn_cv_recall)
+plot_cv_scores_bar(knn_cv_f1, knn_cv_precision, knn_cv_recall)

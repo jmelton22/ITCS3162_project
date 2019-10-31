@@ -2,6 +2,7 @@
 
 from sklearn import metrics
 import matplotlib.pyplot as plt
+import numpy as np
 
 
 def print_metrics(labels, preds):
@@ -58,6 +59,36 @@ def plot_cv_scores(f1, precision, recall):
     plt.title('Cross Validation Scores')
     plt.xticks(folds)
 
+    plt.legend(title='Scoring Method', loc='best', ncol=2, frameon=True)
+
+    plt.show()
+
+
+def plot_cv_scores_bar(f1, precision, recall):
+    folds = range(1, len(f1)+1)
+    bar_width = 0.25
+
+    r1 = np.arange(len(f1))
+    r2 = [x + bar_width for x in r1]
+    r3 = [x + bar_width for x in r2]
+
+    plt.bar(r1, f1,
+            color='orange', width=bar_width,
+            edgecolor='white', label='F1 Score')
+    plt.bar(r2, precision,
+            color='cornflowerblue', width=bar_width,
+            edgecolor='white', label='Precision')
+    plt.bar(r3, recall,
+            color='forestgreen', width=bar_width,
+            edgecolor='white', label='Recall')
+
+    plt.axhline(f1.mean(), color='orange', linestyle='dashed', label='Mean F1 Score')
+    plt.axhline(precision.mean(), color='cornflowerblue', linestyle='dashed', label='Mean Precision')
+    plt.axhline(recall.mean(), color='forestgreen', linestyle='dashed', label='Mean Recall')
+
+    plt.ylim(top=1.3)
+    plt.xlabel('Fold', fontweight='bold')
+    plt.xticks([r + bar_width for r in range(len(f1))], folds)
     plt.legend(title='Scoring Method', loc='best', ncol=2, frameon=True)
 
     plt.show()
