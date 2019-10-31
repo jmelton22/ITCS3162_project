@@ -2,44 +2,12 @@
 
 import pandas as pd
 import numpy as np
+from my_metrics import *
 
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.naive_bayes import BernoulliNB
 import sklearn.model_selection as ms
-from sklearn import metrics
 from sklearn.impute import SimpleImputer
-
-
-def print_metrics(labels, preds):
-    """
-        Prints confusion matrix and metrics scores for a binary classification
-    """
-    scores = metrics.precision_recall_fscore_support(labels, preds)
-    conf = metrics.confusion_matrix(labels, preds)
-    print(' ' * 4 + 'Confusion Matrix')
-    print(' ' * 19 + 'Predict Republican    Predict Democrat')
-    print('Actual Republican         {}                   {}'.format(conf[0, 0], conf[0, 1]))
-    print('Actual Democrat            {}                  {}'.format(conf[1, 0], conf[1, 1]))
-    print()
-    print('Accuracy: {0:.3f}'.format(metrics.accuracy_score(labels, preds)))
-    print()
-    print(' ' * 4 + 'Classification Report')
-    print(' ' * 11 + 'Republican    Democrat')
-    print('Num cases    {}             {}'.format(scores[3][0], scores[3][1]))
-    print('Precision    {0:.2f}         {0:.2f}'.format(scores[0][0], scores[0][1]))
-    print('Recall       {0:.2f}         {0:.2f}'.format(scores[1][0], scores[1][1]))
-    print('F1 Score     {0:.2f}         {0:.2f}'.format(scores[2][0], scores[2][1]))
-
-
-def print_cv_scores(f1, precision, recall):
-    print(' ' * 4 + 'Cross Validation Scores')
-    print(' ' * 9 + 'F1     Precision    Recall')
-    for i, (f, p, r) in enumerate(zip(f1, precision, recall)):
-        print('Fold {}   {:.3f}    {:.3f}      {:.3f}'.format(i, f, p, r))
-    print()
-    print('Mean F1: {:.3f}'.format(f1.mean()))
-    print('Mean Precision: {:.3f}'.format(precision.mean()))
-    print('Mean Recall: {:.3f}'.format(recall.mean()))
 
 
 voting_data = pd.read_csv('voting_data.csv',
