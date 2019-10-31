@@ -44,21 +44,47 @@ def print_cv_scores(f1, precision, recall):
     print('Mean Recall: {:.3f}'.format(recall.mean()))
 
 
-def plot_cv_scores(score_dict):
-    print(score_dict)
+def plot_cv_scores(f1, precision, recall):
+    folds = range(1, len(f1)+1)
+    fig = plt.figure(figsize=(10, 6))
 
+    plt.plot(folds, precision,
+             color='cornflowerblue', label='Precision',
+             alpha=0.8, linewidth=2)
+    plt.plot(folds, f1,
+             color='orange', label='F1 Score',
+             alpha=0.8, linewidth=2)
+    plt.plot(folds, recall,
+             color='forestgreen', label='Recall',
+             alpha=0.8, linewidth=2)
+
+    plt.axhline(precision.mean(), color='cornflowerblue', label='Mean Precision', linestyle='dashed')
+    plt.axhline(f1.mean(), color='orange', label='Mean F1 Score', linestyle='dashed')
+    plt.axhline(recall.mean(), color='forestgreen', label='Mean Recall', linestyle='dashed')
+
+    plt.xlabel('CV Fold')
+    plt.title('Cross Validation Scores')
+    plt.xticks(folds)
+
+    plt.legend(title='Scoring Method', loc='best', ncol=2, frameon=True)
+
+    plt.show()
+
+
+def plot_grid_cv(score_dict):
     n_neighbors = score_dict['param_n_neighbors']
     mean_scores = score_dict['mean_test_score']
     std_scores = score_dict['std_test_score']
-    colors = ['orange', 'cornflowerblue', 'forestgreen', 'red', 'purple']
+    # colors = ['orange', 'cornflowerblue', 'forestgreen', 'red', 'purple']
 
     fig = plt.figure(figsize=(10, 6))
     plt.bar(n_neighbors, mean_scores,
             yerr=std_scores, capsize=2)
 
-    plt.title('Cross-Validation Scores for KNN Model')
+    plt.title('Grid Search CV')
     plt.xlabel('Number of Neighbors')
     plt.ylabel('Mean F1 Score')
+
     plt.ylim(bottom=0.6)
     plt.xticks([int(i) for i in n_neighbors])
 
@@ -99,15 +125,13 @@ gnb_cv_recall = ms.cross_val_score(gnb, features, labels, cv=5, scoring='recall'
 print_cv_scores(gnb_cv_f1, gnb_cv_precision, gnb_cv_recall)
 print('-' * 50)
 
-knn = KNeighborsClassifier()
-
-knn = ms.GridSearchCV(estimator=knn, param_grid={'n_neighbors': [1, 3, 5, 7, 9]},
-                      cv=3,
-                      scoring='f1',
+knn = ms.GridSearchCV(estimator=KNeighborsClassifier(),
+                      param_grid={'n_neighbors': [1, 3, 5, 7, 9]},
+                      cv=3, scoring='f1',
                       refit=True)
 knn.fit(X_train, y_train)
 
-plot_cv_scores(knn.cv_results_)
+plot_grid_cv(knn.cv_results_)
 
 y_pred_knn = knn.predict(X_test)
 
@@ -119,4 +143,5 @@ knn_cv_f1 = ms.cross_val_score(knn, features, labels, cv=5, scoring='f1')
 knn_cv_precision = ms.cross_val_score(knn, features, labels, cv=5, scoring='precision')
 knn_cv_recall = ms.cross_val_score(knn, features, labels, cv=5, scoring='recall')
 
+plot_cv_scores(knn_cv_f1, knn_cv_precision, knn_cv_recall)
 print_cv_scores(knn_cv_f1, knn_cv_precision, knn_cv_recall)
