@@ -37,35 +37,33 @@ def print_cv_scores(f1, precision, recall):
     print('Mean Recall: {:.3f}'.format(recall.mean()))
 
 
-def plot_cv_scores(f1, precision, recall):
-    folds = range(1, len(f1)+1)
+def plot_cv_scores(n, f1, precision, recall):
     fig = plt.figure(figsize=(10, 6))
 
-    plt.plot(folds, precision,
+    plt.plot(n, precision,
              color='cornflowerblue', label='Precision',
              alpha=0.75, linewidth=2)
-    plt.plot(folds, f1,
+    plt.plot(n, f1,
              color='orange', label='F1 Score',
              alpha=0.75, linewidth=2)
-    plt.plot(folds, recall,
+    plt.plot(n, recall,
              color='forestgreen', label='Recall',
              alpha=0.75, linewidth=2)
 
-    plt.axhline(precision.mean(), color='cornflowerblue', label='Mean Precision', linestyle='dashed')
-    plt.axhline(f1.mean(), color='orange', label='Mean F1 Score', linestyle='dashed')
-    plt.axhline(recall.mean(), color='forestgreen', label='Mean Recall', linestyle='dashed')
+    # plt.axhline(precision.mean(), color='cornflowerblue', label='Mean Precision', linestyle='dashed')
+    # plt.axhline(f1.mean(), color='orange', label='Mean F1 Score', linestyle='dashed')
+    # plt.axhline(recall.mean(), color='forestgreen', label='Mean Recall', linestyle='dashed')
 
-    plt.xlabel('CV Fold')
+    plt.xlabel('Num Neighbors')
     plt.title('Cross Validation Scores')
-    plt.xticks(folds)
+    plt.xticks(n)
 
     plt.legend(title='Scoring Method', loc='best', ncol=2, frameon=True)
 
     plt.show()
 
 
-def plot_cv_scores_bar(f1, precision, recall):
-    folds = range(1, len(f1)+1)
+def plot_cv_scores_bar(n, f1, precision, recall):
     bar_width = 0.25
 
     r1 = np.arange(len(f1))
@@ -85,34 +83,15 @@ def plot_cv_scores_bar(f1, precision, recall):
             color='forestgreen', width=bar_width, alpha=0.75,
             edgecolor='white', label='Recall')
 
-    plt.axhline(f1.mean(), color='orange', linestyle='dashed', label='Mean F1 Score')
-    plt.axhline(precision.mean(), color='cornflowerblue', linestyle='dashed', label='Mean Precision')
-    plt.axhline(recall.mean(), color='forestgreen', linestyle='dashed', label='Mean Recall')
+    # plt.axhline(f1.mean(), color='orange', linestyle='dashed', label='Mean F1 Score')
+    # plt.axhline(precision.mean(), color='cornflowerblue', linestyle='dashed', label='Mean Precision')
+    # plt.axhline(recall.mean(), color='forestgreen', linestyle='dashed', label='Mean Recall')
 
     plt.ylim(bottom=0.7)
-    plt.xlabel('Fold', fontweight='bold')
+    plt.xlabel('Num Neighbors', fontweight='bold')
     plt.title('Cross Validation Scores')
-    plt.xticks([r + bar_width for r in range(len(f1))], folds)
+    plt.xticks([r + bar_width for r in range(len(f1))], n)
 
     ax.legend(title='Scoring Method', loc='lower left', bbox_to_anchor=(1, 0.5), ncol=1, frameon=True)
-
-    plt.show()
-
-
-def plot_grid_cv(score_dict):
-    n_neighbors = score_dict['param_n_neighbors']
-    mean_scores = score_dict['mean_test_score']
-    std_scores = score_dict['std_test_score']
-
-    fig = plt.figure(figsize=(10, 6))
-    plt.bar(n_neighbors, mean_scores,
-            yerr=std_scores, capsize=2)
-
-    plt.title('Grid Search CV')
-    plt.xlabel('Number of Neighbors')
-    plt.ylabel('Mean F1 Score')
-
-    plt.ylim(bottom=0.7)
-    plt.xticks([int(i) for i in n_neighbors])
 
     plt.show()

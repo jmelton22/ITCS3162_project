@@ -44,13 +44,17 @@ gnb_cv_recall = ms.cross_val_score(gnb, features, labels, cv=5, scoring='recall'
 print_cv_scores(gnb_cv_f1, gnb_cv_precision, gnb_cv_recall)
 print('-' * 50)
 
+scoring = ['f1', 'precision', 'recall']
+
 knn = ms.GridSearchCV(estimator=KNeighborsClassifier(),
                       param_grid={'n_neighbors': [1, 3, 5, 7, 9]},
-                      cv=3, scoring='f1',
-                      refit=True)
+                      cv=5, scoring=scoring, refit='f1',
+                      return_train_score=False)
 knn.fit(X_train, y_train)
 
-plot_grid_cv(knn.cv_results_)
+for k, v in knn.cv_results_.items():
+    print('{}: {}'.format(k, ' '.join(str(x) for x in v)))
+print()
 
 y_pred_knn = knn.predict(X_test)
 
@@ -58,10 +62,14 @@ print('K-Nearest Neighbors Classifier')
 print_metrics(y_test, y_pred_knn)
 print()
 
-knn_cv_f1 = ms.cross_val_score(knn, features, labels, cv=5, scoring='f1')
-knn_cv_precision = ms.cross_val_score(knn, features, labels, cv=5, scoring='precision')
-knn_cv_recall = ms.cross_val_score(knn, features, labels, cv=5, scoring='recall')
-
-plot_cv_scores(knn_cv_f1, knn_cv_precision, knn_cv_recall)
-print_cv_scores(knn_cv_f1, knn_cv_precision, knn_cv_recall)
-plot_cv_scores_bar(knn_cv_f1, knn_cv_precision, knn_cv_recall)
+plot_cv_scores([int(x) for x in knn.cv_results_['param_n_neighbors']],
+               knn.cv_results_['mean_test_f1'],
+               knn.cv_results_['mean_test_precision'],
+               knn.cv_results_['mean_test_recall'])
+print_cv_scores(knn.cv_results_['mean_test_f1'],
+                knn.cv_results_['mean_test_precision'],
+                knn.cv_results_['mean_test_recall'])
+plot_cv_scores_bar([int(x) for x in knn.cv_results_['param_n_neighbors']],
+                   knn.cv_results_['mean_test_f1'],
+                   knn.cv_results_['mean_test_precision'],
+                   knn.cv_results_['mean_test_recall'])
