@@ -37,25 +37,31 @@ def print_cv_scores(f1, precision, recall):
     print('Mean Recall: {:.3f}'.format(recall.mean()))
 
 
-def plot_cv_scores(n, f1, precision, recall):
-    fig = plt.figure(figsize=(10, 6))
+def plot_cv_scores(results):
+    n = [int(x) for x in results['param_n_neighbors']]
 
+    f1 = results['mean_test_f1']
+    precision = results['mean_test_precision']
+    recall = results['mean_test_recall']
+    accuracy = results['mean_test_accuracy']
+
+    fig = plt.figure(figsize=(10, 6))
     plt.plot(n, precision,
              color='cornflowerblue', label='Precision',
-             alpha=0.75, linewidth=2)
+             linewidth=2)
     plt.plot(n, f1,
              color='orange', label='F1 Score',
-             alpha=0.75, linewidth=2)
+             linewidth=2)
     plt.plot(n, recall,
              color='forestgreen', label='Recall',
-             alpha=0.75, linewidth=2)
+             linewidth=2)
+    plt.plot(n, accuracy,
+             color='purple', label='Accuracy',
+             linewidth=2)
 
-    # plt.axhline(precision.mean(), color='cornflowerblue', label='Mean Precision', linestyle='dashed')
-    # plt.axhline(f1.mean(), color='orange', label='Mean F1 Score', linestyle='dashed')
-    # plt.axhline(recall.mean(), color='forestgreen', label='Mean Recall', linestyle='dashed')
-
-    plt.xlabel('Num Neighbors')
-    plt.title('Cross Validation Scores')
+    # plt.ylim((0.8, 1.0))
+    plt.xlabel('Num Neighbors', fontweight='bold')
+    plt.title('Mean Cross Validation Scores')
     plt.xticks(n)
 
     plt.legend(title='Scoring Method', loc='best', ncol=2, frameon=True)
@@ -63,35 +69,46 @@ def plot_cv_scores(n, f1, precision, recall):
     plt.show()
 
 
-def plot_cv_scores_bar(n, f1, precision, recall):
-    bar_width = 0.25
+def plot_cv_scores_bar(results):
+    n = [int(x) for x in results['param_n_neighbors']]
 
+    f1 = results['mean_test_f1']
+    precision = results['mean_test_precision']
+    recall = results['mean_test_recall']
+    accuracy = results['mean_test_accuracy']
+
+    fill = [0] * len(n)
+
+    f1_std = [fill, results['std_test_f1']]
+    precision_std = [fill, results['std_test_precision']]
+    recall_std = [fill, results['std_test_recall']]
+    accuracy_std = [fill, results['std_test_accuracy']]
+
+    bar_width = 0.15
     r1 = np.arange(len(f1))
     r2 = [x + bar_width for x in r1]
     r3 = [x + bar_width for x in r2]
+    r4 = [x + bar_width for x in r3]
 
     fig = plt.figure(figsize=(10, 6))
-    ax = plt.subplot(111)
-
-    plt.bar(r1, f1,
-            color='orange', width=bar_width, alpha=0.75,
+    plt.bar(r1, f1, yerr=f1_std,
+            color='orange', width=bar_width,
             edgecolor='white', label='F1 Score')
-    plt.bar(r2, precision,
-            color='cornflowerblue', width=bar_width, alpha=0.75,
+    plt.bar(r2, precision, yerr=precision_std,
+            color='cornflowerblue', width=bar_width,
             edgecolor='white', label='Precision')
-    plt.bar(r3, recall,
-            color='forestgreen', width=bar_width, alpha=0.75,
+    plt.bar(r3, recall, yerr=recall_std,
+            color='forestgreen', width=bar_width,
             edgecolor='white', label='Recall')
+    plt.bar(r4, accuracy, yerr=accuracy_std,
+            color='purple', width=bar_width,
+            edgecolor='white', label='Accuracy')
 
-    # plt.axhline(f1.mean(), color='orange', linestyle='dashed', label='Mean F1 Score')
-    # plt.axhline(precision.mean(), color='cornflowerblue', linestyle='dashed', label='Mean Precision')
-    # plt.axhline(recall.mean(), color='forestgreen', linestyle='dashed', label='Mean Recall')
-
-    plt.ylim(bottom=0.7)
+    plt.ylim((0.5, 1.0))
     plt.xlabel('Num Neighbors', fontweight='bold')
-    plt.title('Cross Validation Scores')
-    plt.xticks([r + bar_width for r in range(len(f1))], n)
+    plt.title('Mean Cross Validation Scores')
+    plt.xticks([r + bar_width for r in range(len(n))], n)
 
-    ax.legend(title='Scoring Method', loc='lower left', bbox_to_anchor=(1, 0.5), ncol=1, frameon=True)
+    plt.legend(title='Scoring Method', loc='lower left', bbox_to_anchor=(1, 0.5), ncol=1, frameon=True)
 
     plt.show()
