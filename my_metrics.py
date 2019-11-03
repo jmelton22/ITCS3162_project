@@ -26,15 +26,21 @@ def print_metrics(labels, preds):
     print('F1 Score     {0:.2f}       {0:.2f}'.format(scores[2][0], scores[2][1]))
 
 
-def print_cv_scores(f1, precision, recall):
+def print_cv_scores(results):
+    f1 = results['test_f1']
+    precision = results['test_precision']
+    recall = results['test_recall']
+    accuracy = results['test_accuracy']
+
     print(' ' * 4 + 'Cross Validation Scores')
-    print(' ' * 9 + 'F1     Precision    Recall')
-    for i, (f, p, r) in enumerate(zip(f1, precision, recall)):
-        print('Fold {}   {:.3f}    {:.3f}      {:.3f}'.format(i, f, p, r))
+    print(' ' * 9 + 'F1     Precision    Recall    Accuracy')
+    for i, (f, p, r, a) in enumerate(zip(f1, precision, recall, accuracy)):
+        print('Fold {}   {:.3f}    {:.3f}      {:.3f}     {:.3f}'.format(i, f, p, r, a))
     print()
     print('Mean F1: {:.3f}'.format(f1.mean()))
     print('Mean Precision: {:.3f}'.format(precision.mean()))
     print('Mean Recall: {:.3f}'.format(recall.mean()))
+    print('Mean Accuracy: {:.3f}'.format(accuracy.mean()))
 
 
 def plot_cv_scores(results):

@@ -37,14 +37,12 @@ print('Naive Bayes Classifier')
 print_metrics(y_test, y_pred_gnb)
 print()
 
-gnb_cv_f1 = ms.cross_val_score(gnb, features, labels, cv=5, scoring='f1')
-gnb_cv_precision = ms.cross_val_score(gnb, features, labels, cv=5, scoring='precision')
-gnb_cv_recall = ms.cross_val_score(gnb, features, labels, cv=5, scoring='recall')
-
-print_cv_scores(gnb_cv_f1, gnb_cv_precision, gnb_cv_recall)
-print('-' * 50)
-
 scoring = ['f1', 'precision', 'recall', 'accuracy']
+
+gnb_cv_scores = ms.cross_validate(gnb, features, labels,
+                                  cv=5, scoring=scoring)
+print_cv_scores(gnb_cv_scores)
+print('-' * 50)
 
 knn = ms.GridSearchCV(estimator=KNeighborsClassifier(),
                       param_grid={'n_neighbors': range(1, 10, 2)},
@@ -52,18 +50,19 @@ knn = ms.GridSearchCV(estimator=KNeighborsClassifier(),
                       return_train_score=False)
 knn.fit(X_train, y_train)
 
-for k, v in knn.cv_results_.items():
-    print('{}: {}'.format(k, ' '.join(str(x) for x in v)))
-print()
+# for k, v in knn.cv_results_.items():
+#     print('{}: {}'.format(k, ' '.join(str(x) for x in v)))
+# print()
 
 y_pred_knn = knn.predict(X_test)
 
 print('K-Nearest Neighbors Classifier')
 print_metrics(y_test, y_pred_knn)
 print()
-print_cv_scores(knn.cv_results_['mean_test_f1'],
-                knn.cv_results_['mean_test_precision'],
-                knn.cv_results_['mean_test_recall'])
+
+knn_cv_scores = ms.cross_validate(knn, features, labels,
+                                  cv=5, scoring=scoring)
+print_cv_scores(knn_cv_scores)
 
 plot_cv_scores(knn.cv_results_)
 plot_cv_scores_bar(knn.cv_results_)
