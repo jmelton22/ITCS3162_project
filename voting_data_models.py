@@ -1,14 +1,12 @@
 #!/usr/bin/env python3
 
 import pandas as pd
-import numpy as np
 from my_metrics import *
 
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.naive_bayes import BernoulliNB
 import sklearn.model_selection as ms
 from sklearn.impute import SimpleImputer
-
 
 voting_data = pd.read_csv('voting_data.csv',
                           header=0,
@@ -40,26 +38,29 @@ features_v3 = voting_data.drop('Class Name', axis=1)
 imp = SimpleImputer(strategy='most_frequent')
 features_v3 = imp.fit_transform(features_v3)
 
-for i, (features, labels) in enumerate([(features_v1, labels_v1), (features_v2, labels_v2), (features_v3, labels_v3)]):
+features = [features_v1, features_v2, features_v3]
+labels = [labels_v1, labels_v2, labels_v3]
+scoring = ['f1', 'precision', 'recall', 'accuracy']
 
-    X_train, X_test, y_train, y_test = ms.train_test_split(features, labels,
+for i, (feat, lab) in enumerate(zip(features, labels)):
+
+    X_train, X_test, y_train, y_test = ms.train_test_split(feat, lab,
                                                            test_size=0.2,
                                                            random_state=123)
 
     # Decision Tree model
     print('Version {}: Decision Tree'.format(i+1))
-    tree = DecisionTreeClassifier()
+    tree = DecisionTreeClassifier(criterion='gini',
+                                  class_weight='balanced')
     tree.fit(X_train, y_train)
 
     y_pred_tree = tree.predict(X_test)
     print_metrics(y_test, y_pred_tree)
     print()
 
-    tree_cv_f1 = ms.cross_val_score(tree, features, labels, cv=5, scoring='f1')
-    tree_cv_precision = ms.cross_val_score(tree, features, labels, cv=5, scoring='precision')
-    tree_cv_recall = ms.cross_val_score(tree, features, labels, cv=5, scoring='recall')
-
-    print_cv_scores(tree_cv_f1, tree_cv_precision, tree_cv_recall)
+    tree_cv_scores = ms.cross_validate(tree, feat, lab,
+                                       cv=5, scoring=scoring)
+    print_cv_scores(tree_cv_scores)
     print('-' * 25)
 
     # Naive Bayes model
@@ -71,10 +72,8 @@ for i, (features, labels) in enumerate([(features_v1, labels_v1), (features_v2, 
     print_metrics(y_test, y_pred_nb)
     print()
 
-    bnb_cv_f1 = ms.cross_val_score(tree, features, labels, cv=5, scoring='f1')
-    bnb_cv_precision = ms.cross_val_score(tree, features, labels, cv=5, scoring='precision')
-    bnb_cv_recall = ms.cross_val_score(tree, features, labels, cv=5, scoring='recall')
-
-    print_cv_scores(bnb_cv_f1, bnb_cv_precision, bnb_cv_recall)
+    bnb_cv_scores = ms.cross_validate(bnb, feat, lab,
+                                      cv=5, scoring=scoring)
+    print_cv_scores(bnb_cv_scores)
     print('-' * 50)
     print('-' * 50)
