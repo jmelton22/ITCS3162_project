@@ -14,12 +14,8 @@ voting_data = pd.read_csv('voting_data.csv',
 # print(voting_data.head())
 # voting_data.info()
 
-voting_data.replace('?', np.NaN, inplace=True)
-voting_data.replace('y', 1, inplace=True)
-voting_data.replace('n', 0, inplace=True)
-
-voting_data.replace('republican', 1, inplace=True)
-voting_data.replace('democrat', 0, inplace=True)
+voting_data.replace({'y': 1, 'n': 0, '?': np.NaN,
+                     'republican': 1, 'democrat': 0}, inplace=True)
 
 # Version 1: Drop rows with NaN
 voting_data_v1 = voting_data.dropna(axis=0, how='any')

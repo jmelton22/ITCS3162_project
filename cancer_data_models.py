@@ -19,8 +19,7 @@ cancer_data.drop(cancer_data.filter(regex='Unnamed'),
 # cancer_data.info()
 
 labels = cancer_data['diagnosis']
-labels.replace('M', 1, inplace=True)
-labels.replace('B', 0, inplace=True)
+labels.replace({'M': 1, 'B': 0}, inplace=True)
 
 features = cancer_data.drop('diagnosis', axis=1)
 
