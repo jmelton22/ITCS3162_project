@@ -17,6 +17,10 @@ voting_data = pd.read_csv('voting_data.csv',
 voting_data.replace({'y': 1, 'n': 0, '?': np.NaN,
                      'republican': 1, 'democrat': 0}, inplace=True)
 
+print(voting_data.groupby('Class Name').size())
+print(voting_data[voting_data.isnull().any(axis=1)].groupby('Class Name').size())
+print()
+
 # Version 1: Drop rows with NaN
 voting_data_v1 = voting_data.dropna(axis=0, how='any')
 labels_v1 = voting_data_v1['Class Name']
@@ -42,12 +46,13 @@ for i, (feat, lab) in enumerate(zip(features, labels)):
 
     X_train, X_test, y_train, y_test = ms.train_test_split(feat, lab,
                                                            test_size=0.2,
-                                                           random_state=123)
+                                                           random_state=1776)
 
     # Decision Tree model
     print('Version {}: Decision Tree'.format(i+1))
     tree = DecisionTreeClassifier(criterion='gini',
-                                  class_weight='balanced')
+                                  class_weight='balanced',
+                                  random_state=1916)
     tree.fit(X_train, y_train)
 
     y_pred_tree = tree.predict(X_test)
