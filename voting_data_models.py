@@ -3,10 +3,15 @@
 import pandas as pd
 from my_metrics import *
 
-from sklearn.tree import DecisionTreeClassifier
+from sklearn.tree import DecisionTreeClassifier, export_graphviz
 from sklearn.naive_bayes import BernoulliNB
 import sklearn.model_selection as ms
 from sklearn.impute import SimpleImputer
+
+from graphviz import Source
+
+import os
+os.environ["PATH"] += os.pathsep + 'C:\\Program Files (x86)\\Graphviz2.38\\bin'
 
 voting_data = pd.read_csv('voting_data.csv',
                           header=0,
@@ -55,6 +60,9 @@ for i, (feat, lab) in enumerate(zip(features, labels)):
                                   random_state=1916)
     tree.fit(X_train, y_train)
 
+    graph = Source(export_graphviz(tree, out_file=None, feature_names=voting_data.columns[1:]))
+    graph.render('tree_v{}.gv'.format(i+1), view=True)
+
     y_pred_tree = tree.predict(X_test)
     print_metrics(y_test, y_pred_tree)
     print()
@@ -65,12 +73,12 @@ for i, (feat, lab) in enumerate(zip(features, labels)):
     print('-' * 25)
 
     # Naive Bayes model
-    print('Version {}: Naive Bayes'.format(i+1))
+    print('Version {}: Bernoulli Naive Bayes'.format(i+1))
     bnb = BernoulliNB()
     bnb.fit(X_train, y_train)
 
-    y_pred_nb = bnb.predict(X_test)
-    print_metrics(y_test, y_pred_nb)
+    y_pred_bnb = bnb.predict(X_test)
+    print_metrics(y_test, y_pred_bnb)
     print()
 
     bnb_cv_scores = ms.cross_validate(bnb, feat, lab,
