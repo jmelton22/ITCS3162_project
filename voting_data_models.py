@@ -4,11 +4,15 @@ import pandas as pd
 from my_metrics import *
 
 from sklearn.tree import DecisionTreeClassifier, export_graphviz
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.naive_bayes import BernoulliNB
 import sklearn.model_selection as ms
 from sklearn.impute import SimpleImputer
 
 from graphviz import Source
+
+import warnings
+warnings.filterwarnings('ignore', category=FutureWarning)
 
 import os
 os.environ["PATH"] += os.pathsep + 'C:\\Program Files (x86)\\Graphviz2.38\\bin'
@@ -70,6 +74,23 @@ for i, (feat, lab) in enumerate(zip(features, labels)):
     tree_cv_scores = ms.cross_validate(tree, feat, lab,
                                        cv=5, scoring=scoring)
     print_cv_scores(tree_cv_scores)
+    print('-' * 25)
+
+    # Random Forest model
+    print('Version {}: Random Forest'.format(i+1))
+    forest = RandomForestClassifier(criterion='gini',
+                                    bootstrap=True,
+                                    class_weight='balanced',
+                                    random_state=1916)
+    forest.fit(X_train, y_train)
+
+    y_pred_forest = forest.predict(X_test)
+    print_metrics(y_test, y_pred_forest)
+    print()
+
+    forest_cv_scores = ms.cross_validate(forest, feat, lab,
+                                         cv=5, scoring=scoring)
+    print_cv_scores(forest_cv_scores)
     print('-' * 25)
 
     # Naive Bayes model
