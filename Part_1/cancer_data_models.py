@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import pandas as pd
-from my_metrics import *
+from Part_1.my_metrics import *
 
 from sklearn.naive_bayes import GaussianNB
 from sklearn.neighbors import KNeighborsClassifier

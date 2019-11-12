@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import pandas as pd
-from my_metrics import *
+from Part_1.my_metrics import *
 
 from sklearn.tree import DecisionTreeClassifier, export_graphviz
 from sklearn.ensemble import RandomForestClassifier
