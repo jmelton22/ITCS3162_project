@@ -14,10 +14,12 @@ from sklearn.neighbors import KNeighborsRegressor
 from sklearn import metrics
 from sklearn.decomposition import PCA
 
+pd.set_option('display.expand_frame_repr', False)
 
-def hist_resids(y_test, y_score):
+
+def hist_resids(y_test, y_preds):
     # Compute vector of residuals
-    resids = np.subtract(y_test, y_score)
+    resids = np.subtract(y_test, y_preds)
     # Make residuals plot
     sns.distplot(resids)
     plt.title('Histogram of residuals')
@@ -26,9 +28,9 @@ def hist_resids(y_test, y_score):
     plt.show()
 
 
-def resid_qq(y_test, y_score):
+def resid_qq(y_test, y_preds):
     # Compute vector of residuals
-    resids = np.subtract(y_test, y_score)
+    resids = np.subtract(y_test, y_preds)
     # Make residuals plot
     ss.probplot(resids, plot=plt)
     plt.title('Residuals vs. Predicted values')
@@ -37,11 +39,11 @@ def resid_qq(y_test, y_score):
     plt.show()
 
 
-def resid_plot(y_test, y_score):
+def resid_plot(y_test, y_preds):
     # Compute vector of residuals
-    resids = np.subtract(y_test, y_score)
+    resids = np.subtract(y_test, y_preds)
     # Make residuals plot
-    sns.regplot(y_score, resids, fit_reg=False)
+    sns.regplot(y_preds, resids, fit_reg=False)
     plt.title('Residuals vs. Predicted values')
     plt.xlabel('Predicted value')
     plt.ylabel('Residual')
@@ -63,54 +65,31 @@ hourly_data = pd.read_csv('Bike-Sharing-Dataset/hour.csv',
 # hourly_data.info()
 
 features = hourly_data.drop(['dteday', 'casual', 'registered', 'cnt'], axis=1)
+# print(features.describe())
 
-# pca = PCA(n_components=0.95,
-#           svd_solver='full')
-# features = pca.fit_transform(features)
-# print(pca.components_)
-# print(['{:.5f}'.format(x) for x in pca.explained_variance_])
-# print(['{:.5f}'.format(x) for x in pca.explained_variance_ratio_])
-# fig1 = plt.figure(figsize=(16, 8))
-# plt.bar(x=range(len(pca.explained_variance_ratio_)), height=pca.explained_variance_ratio_)
-# plt.show()
+pca = PCA(n_components=0.99,
+          svd_solver='full')
+features = pca.fit_transform(features)
+print(['{:.5f}'.format(x) for x in pca.explained_variance_])
+print(['{:.5f}'.format(x) for x in pca.explained_variance_ratio_])
+fig1 = plt.figure(figsize=(16, 8))
+plt.bar(x=range(len(pca.explained_variance_ratio_)), height=pca.explained_variance_ratio_)
+plt.show()
 
-for lab in ['casual', 'registered', 'cnt']:
+label_set = ['casual', 'registered', 'cnt']
+for lab in label_set:
     print(lab)
     labels = hourly_data[lab]
-    print('Mean: {:.3f}'.format(labels.mean()))
-    print('Std: {:.3f}'.format(labels.std()))
 
     X_train, X_test, y_train, y_test = ms.train_test_split(features, labels,
                                                            test_size=0.2,
                                                            random_state=123)
-
-    # corrs = features.corrwith(labels, axis=0,
-    #                           method='pearson')
-    # corrs.sort_values(ascending=False, inplace=True)
-    # # print(corrs)
-    #
-    # fig, ax = plt.subplots(2, 2, figsize=(16, 8))
-    # ind = 0
-    # for row in [0, 1]:
-    #     for col in [0, 1]:
-    #         df_col = corrs.index[ind]
-    #         ax[row, col].scatter(features[df_col], labels, s=3)
-    #
-    #         ax[row, col].set_xlabel(df_col, fontweight='bold')
-    #         ax[row, col].set_ylabel(lab)
-    #
-    #         ax[row, col].text(0.05, 0.95, 'R = {:.4f}'.format(corrs[ind]),
-    #                           transform=ax[row, col].transAxes)
-    #         ind += 1
-    #
-    # plt.show()
 
     # Linear Regression model
     lin_reg = LinearRegression()
     lin_reg.fit(X_train, y_train)
 
     lin_preds = lin_reg.predict(X_test)
-
     print_metrics(y_test, lin_preds)
 
     hist_resids(y_test, lin_preds)
