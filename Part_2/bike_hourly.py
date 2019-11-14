@@ -17,34 +17,34 @@ from sklearn.decomposition import PCA
 pd.set_option('display.expand_frame_repr', False)
 
 
-def hist_resids(y_test, y_preds):
+def hist_resids(y_test, y_preds, label, model):
     # Compute vector of residuals
     resids = np.subtract(y_test, y_preds)
     # Make residuals plot
     sns.distplot(resids)
-    plt.title('Histogram of residuals')
+    plt.title('{}: {}\nHistogram of residuals'.format(label, model))
     plt.xlabel('Residual value')
     plt.ylabel('Count')
     plt.show()
 
 
-def resid_qq(y_test, y_preds):
+def resid_qq(y_test, y_preds, label, model):
     # Compute vector of residuals
     resids = np.subtract(y_test, y_preds)
     # Make residuals plot
     ss.probplot(resids, plot=plt)
-    plt.title('Residuals vs. Predicted values')
+    plt.title('{}: {}\nResiduals vs. Predicted values'.format(label, model))
     plt.xlabel('Predicted value')
     plt.ylabel('Residual')
     plt.show()
 
 
-def resid_plot(y_test, y_preds):
+def resid_plot(y_test, y_preds, label, model):
     # Compute vector of residuals
     resids = np.subtract(y_test, y_preds)
     # Make residuals plot
     sns.regplot(y_preds, resids, fit_reg=False)
-    plt.title('Residuals vs. Predicted values')
+    plt.title('{}: {}\nResiduals vs. Predicted values'.format(label, model))
     plt.xlabel('Predicted value')
     plt.ylabel('Residual')
     plt.show()
@@ -79,6 +79,7 @@ plt.show()
 label_set = ['casual', 'registered', 'cnt']
 for lab in label_set:
     print(lab)
+    print()
     labels = hourly_data[lab]
 
     X_train, X_test, y_train, y_test = ms.train_test_split(features, labels,
@@ -86,13 +87,31 @@ for lab in label_set:
                                                            random_state=123)
 
     # Linear Regression model
+    print('Linear Regression model')
     lin_reg = LinearRegression()
     lin_reg.fit(X_train, y_train)
 
     lin_preds = lin_reg.predict(X_test)
     print_metrics(y_test, lin_preds)
 
-    hist_resids(y_test, lin_preds)
-    resid_qq(y_test, lin_preds)
-    resid_plot(y_test, lin_preds)
-    print('-' * 50)
+    hist_resids(y_test, lin_preds, lab, 'lin_reg')
+    resid_qq(y_test, lin_preds, lab, 'lin_reg')
+    resid_plot(y_test, lin_preds, lab, 'lin_reg')
+    print('-' * 25)
+
+    # KNN Regression model
+    print('KNN Regression model')
+    knn_reg = ms.GridSearchCV(KNeighborsRegressor(),
+                              param_grid={'n_neighbors': range(1, 20, 2)},
+                              cv=5, scoring='neg_mean_squared_error',
+                              refit=True)
+    knn_reg.fit(X_train, y_train)
+    print('Best k:', knn_reg.best_params_)
+
+    knn_preds = knn_reg.predict(X_test)
+    print_metrics(y_test, knn_preds)
+
+    hist_resids(y_test, lin_preds, lab, 'knn_reg')
+    resid_qq(y_test, lin_preds, lab, 'knn_reg')
+    resid_plot(y_test, lin_preds, lab, 'knn_reg')
+    print('#' * 50)
