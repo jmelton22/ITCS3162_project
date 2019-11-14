@@ -32,5 +32,8 @@ for lab in label_set:
             ax[row, col].text(0.05, 0.95, 'R = {:.4f}'.format(corrs[ind]),
                               transform=ax[row, col].transAxes)
             ind += 1
+    plt.show()
 
+    ax2 = labels.plot(kind='hist', title='lab')
+    labels.plot(kind='kde', ax=ax2, secondary_y=True)
     plt.show()

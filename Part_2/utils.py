@@ -42,8 +42,8 @@ def resid_plot(y_test, y_preds, label, model):
 
 
 def print_metrics(y_true, y_predicted):
-    print('Mean Square Error      =', str(metrics.mean_squared_error(y_true, y_predicted)))
-    print('Root Mean Square Error =', str(math.sqrt(metrics.mean_squared_error(y_true, y_predicted))))
-    print('Mean Absolute Error    =', str(metrics.mean_absolute_error(y_true, y_predicted)))
-    print('Median Absolute Error  =', str(metrics.median_absolute_error(y_true, y_predicted)))
-    print('R^2                    =', str(metrics.r2_score(y_true, y_predicted)))
+    print('Mean Square Error      = {:.3f}'.format(metrics.mean_squared_error(y_true, y_predicted)))
+    print('Root Mean Square Error = {:.3f}'.format(math.sqrt(metrics.mean_squared_error(y_true, y_predicted))))
+    print('Mean Absolute Error    = {:.3f}'.format(metrics.mean_absolute_error(y_true, y_predicted)))
+    print('Median Absolute Error  = {:.3f}'.format(metrics.median_absolute_error(y_true, y_predicted)))
+    print('R^2                    = {:.3f}'.format(metrics.r2_score(y_true, y_predicted)))
