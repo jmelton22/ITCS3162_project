@@ -23,7 +23,6 @@ features = hourly_data.drop(['dteday', 'casual', 'registered', 'cnt'], axis=1)
 pca = PCA(n_components=0.99,
           svd_solver='full')
 features = pca.fit_transform(features)
-print(['{:.5f}'.format(x) for x in pca.explained_variance_])
 print(['{:.5f}'.format(x) for x in pca.explained_variance_ratio_])
 fig1 = plt.figure(figsize=(16, 8))
 plt.bar(x=range(len(pca.explained_variance_ratio_)), height=pca.explained_variance_ratio_)
