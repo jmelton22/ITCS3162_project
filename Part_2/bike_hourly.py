@@ -49,7 +49,7 @@ for lab in label_set:
     hist_resids(y_test, lin_preds, lab, 'lin_reg')
     resid_qq(y_test, lin_preds, lab, 'lin_reg')
     resid_plot(y_test, lin_preds, lab, 'lin_reg')
-    print('-' * 25)
+    print('-' * 30)
 
     # KNN Regression model
     print('KNN Regression model')
@@ -66,4 +66,4 @@ for lab in label_set:
     hist_resids(y_test, lin_preds, lab, 'knn_reg')
     resid_qq(y_test, lin_preds, lab, 'knn_reg')
     resid_plot(y_test, lin_preds, lab, 'knn_reg')
-    print('#' * 50)
+    print('#' * 40)
