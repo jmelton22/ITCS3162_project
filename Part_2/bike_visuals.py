@@ -2,6 +2,7 @@
 
 import pandas as pd
 import matplotlib.pyplot as plt
+import scipy.stats as ss
 
 hourly_data = pd.read_csv('Bike-Sharing-Dataset/hour.csv',
                           header=0, index_col=0,
@@ -14,11 +15,13 @@ label_set = ['casual', 'registered', 'cnt']
 for lab in label_set:
     labels = hourly_data[lab]
 
+    # Calculate how correlated each feature is with the labels
     corrs = features.corrwith(labels, axis=0,
                               method='pearson')
     corrs.sort_values(ascending=False, inplace=True)
     # print(corrs)
 
+    # Plot scatter plot of 4 features with highest correlations
     fig, ax = plt.subplots(2, 2, figsize=(16, 8))
     ind = 0
     for row in [0, 1]:
@@ -34,6 +37,11 @@ for lab in label_set:
             ind += 1
     plt.show()
 
-    ax2 = labels.plot(kind='hist', title='lab')
+    # Plot histogram of labels
+    ax2 = labels.plot(kind='hist', title=lab)
     labels.plot(kind='kde', ax=ax2, secondary_y=True)
+    plt.show()
+
+    # Plot QQ-plot of labels
+    ss.probplot(labels, plot=plt)
     plt.show()
