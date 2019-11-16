@@ -12,13 +12,20 @@ with open('as-caida20071105.txt') as f:
             print(line.strip())
             continue
 
+        # Extract source node, target node, and relationship from each line
         source, target, relation = [int(x) for x in line.strip().split('\t')]
+
+        # Add edge to graph version 1
         graph_v1.add_edge(source, target)
 
+        # For graph version 2:
+        # If relationship is 1, retain edge direction
         if relation == 1:
             graph_v2.add_edge(source, target)
+        # If relationship is -1, reverse edge direction
         elif relation == -1:
             graph_v2.add_edge(target, source)
+        # Else, randomize edge direction
         else:
             graph_v2.add_edge(source, target) if choice([True, False]) else graph_v2.add_edge(target, source)
 
@@ -33,8 +40,8 @@ for i, graph in enumerate([graph_v1, graph_v2]):
     print('Top 10 ranked nodes:')
     for node, rank in sorted_pr[:10]:
         print('\tNode: {}\t\tRank: {:.5f}'.format(node, rank))
-    print()
-    print('Bottom 10 ranked nodes:')
+
+    print('\nBottom 10 ranked nodes:')
     for node, rank in sorted_pr[-10:]:
         print('\tNode: {}\t\tRank: {:.5e}'.format(node, rank))
     print('-' * 50)
