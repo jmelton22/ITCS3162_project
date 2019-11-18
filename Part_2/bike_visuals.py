@@ -18,8 +18,9 @@ for lab in label_set:
     # Calculate how correlated each feature is with the labels
     corrs = features.corrwith(labels, axis=0,
                               method='pearson')
-    corrs.sort_values(ascending=False, inplace=True)
-    # print(corrs)
+    order = corrs.abs().sort_values(ascending=False)
+    corrs = corrs[order.index]
+    print(corrs)
 
     # Plot scatter plot of 4 features with highest correlations
     fig, ax = plt.subplots(2, 2, figsize=(16, 8))
